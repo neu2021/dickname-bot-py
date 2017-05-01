@@ -14,3 +14,6 @@ For someone else's penis name:
 
 ## Setup
 Make `token.txt` with the bot token in it and `id.txt` with the bot's user id in it. Put these files in the same directory as bot.py, and run the script.
+
+## To Do
+* Implement syntax `@penis-bot name @some-user`
