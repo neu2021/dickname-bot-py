@@ -82,7 +82,7 @@ def handle_command(user_id, command, channel):
     if args[0] == "name":
         if len(args) not in (1, 2, 3):
             slack_client.api_call("chat.postMessage", channel=channel,
-                                  text="Incorrect number of arguments!", as_user=True)
+                                  text=f"<@{user_id}>: Incorrect number of arguments!", as_user=True)
         else:
             if len(args) == 3:
                 initials = [args[1][0].lower(), args[2][0].lower()]
@@ -93,9 +93,15 @@ def handle_command(user_id, command, channel):
                     response += "'s"
             elif len(args) == 2:
                 lookup_id = args[1][2:-1].upper()
+                if lookup_id == BOT_ID:
+                    response = f"<@{user_id}>: My name is Penis Bot!"
+                    slack_client.api_call("chat.postMessage", channel=channel,
+                                          text=response, as_user=True)
+                    return
+
                 real_name = get_real_name(lookup_id)
-                if not real_name:
-                    response = "Invalid command!"
+                if not real_name or len(real_name) != 2:
+                    response = f"<@{user_id}>: Valid name not found!"
                     slack_client.api_call("chat.postMessage", channel=channel,
                                           text=response, as_user=True)
                     return
@@ -127,7 +133,7 @@ def parse_slack_output(slack_rtm_output):
     if output_list and len(output_list) > 0:
         for output in output_list:
             if output and 'text' in output and output["text"].startswith(AT_BOT):
-                return output["user"], output['text'].split(AT_BOT)[1].strip().lower(), output["channel"]
+                return output["user"], output['text'][12:].strip().lower(), output["channel"]
     return None, None, None
 
 
