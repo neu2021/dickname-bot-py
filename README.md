@@ -10,6 +10,7 @@ For your penis name:
 For someone else's penis name:
 ```
 @penis-bot name John Doe
+@penis-bot name @john.doe
 ```
 
 ## Setup
