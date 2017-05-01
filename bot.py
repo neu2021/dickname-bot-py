@@ -79,20 +79,29 @@ def get_real_name(user_id):
 
 def handle_command(user_id, command, channel):
     args = command.split()
+
+    # activate on the "name" command
     if args[0] == "name":
+
+        # initial basic format check
         if len(args) not in (1, 2, 3):
             slack_client.api_call("chat.postMessage", channel=channel,
                                   text=f"<@{user_id}>: Incorrect number of arguments!", as_user=True)
         else:
             if len(args) == 3:
-                initials = [args[1][0].lower(), args[2][0].lower()]
-                response = " ".join((map(lambda n: n[0].upper() + n[1:], args[1:])))
+                initials = [args[1][0].lower(), args[2][0].lower()]  # get initials from arguments
+                response = " ".join((map(lambda n: n[0].upper() + n[1:], args[1:])))  # capitalize name
+
+                # properly use apostrophe (i.e. Charles' instead of Charles's)
                 if response[-1] == 's':
                     response += "'"
                 else:
                     response += "'s"
+
             elif len(args) == 2:
-                lookup_id = args[1][2:-1].upper()
+                lookup_id = args[1][2:-1].upper()  # parse out ID to look up
+
+                # check if user wants the name of the bot
                 if lookup_id == BOT_ID:
                     response = f"<@{user_id}>: My name is Penis Bot!"
                     slack_client.api_call("chat.postMessage", channel=channel,
@@ -100,30 +109,48 @@ def handle_command(user_id, command, channel):
                     return
 
                 real_name = get_real_name(lookup_id)
-                if not real_name or len(real_name) != 2:
-                    response = f"<@{user_id}>: Valid name not found!"
+                split_name = real_name.split()
+
+                # check if user has set real name
+                if not real_name:
+                    response = f"<@{user_id}>: <@{lookup_id}> hasn't set their real name yet!"
                     slack_client.api_call("chat.postMessage", channel=channel,
                                           text=response, as_user=True)
                     return
-                real_name = real_name.split()
-                initials = [real_name[0][0].lower(), real_name[1][0].lower()]
-                response = f"<@{lookup_id}>"
+
+                # check if name is valid
+                if not len(split_name) == 2:
+                    response = f"<@{user_id}>: <@{lookup_id}> does not have a valid name!"
+                    slack_client.api_call("chat.postMessage", channel=channel,
+                                          text=response, as_user=True)
+                    return
+
+                initials = [split_name[0][0].lower(), split_name[1][0].lower()]
+                response = f"<@{user_id}: <@{lookup_id}>"
                 if response[-1] == 's':
                     response += "'"
                 else:
                     response += "'s"
+
             elif len(args) == 1:
                 real_name = get_real_name(user_id)
+                split_name = real_name.split()
                 if not real_name:
                     response = f"<@{user_id}>: You haven't set your real name yet!"
                     slack_client.api_call("chat.postMessage", channel=channel,
                                           text=response, as_user=True)
                     return
-                names = real_name.split()
-                initials = [names[0][0].lower(), names[1][0].lower()]
+
+                elif not len(split_name) == 2:
+                    response = f"<@{user_id}>: Your name is invalid!"
+                    slack_client.api_call("chat.postMessage", channel=channel,
+                                          text=response, as_user=True)
+                    return
+
+                initials = [split_name[0][0].lower(), split_name[1][0].lower()]
                 response = f"<@{user_id}>: Your"
 
-            response += f" penis name is {firstname[initials[0]]} {lastname[initials[1]]}"
+            response += f" penis name is {firstname[initials[0]]} {lastname[initials[1]]}."
             slack_client.api_call("chat.postMessage", channel=channel,
                                   text=response, as_user=True)
 
