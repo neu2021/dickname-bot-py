@@ -77,15 +77,6 @@ def get_real_name(user_id):
                 return user.get("real_name")
 
 
-def get_name(user_id):
-    api_call = slack_client.api_call("users.list")
-    if api_call.get("ok"):
-        users = api_call.get('members')
-        for user in users:
-            if user.get("id") == user_id:
-                return user.get("name")
-
-
 def handle_command(user_id, command, channel):
     args = command.split()
     if args[0] == "name":
@@ -101,8 +92,12 @@ def handle_command(user_id, command, channel):
                 else:
                     response += "'s"
             elif len(args) == 1:
-                name = get_name(user_id)
                 real_name = get_real_name(user_id)
+                if not real_name:
+                    response = f"<@{user_id}>: You haven't set your real name yet!"
+                    slack_client.api_call("chat.postMessage", channel=channel,
+                                          text=response, as_user=True)
+                    return
                 names = real_name.split()
                 initials = [names[0][0].lower(), names[1][0].lower()]
                 response = f"<@{user_id}>: Your"
