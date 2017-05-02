@@ -82,6 +82,7 @@ def handle_command(user_id, command, channel):
 
     # activate on the "name" command
     if args[0] == "name":
+        response = ""
 
         # initial basic format check
         if len(args) not in (1, 2, 3):
@@ -103,7 +104,8 @@ def handle_command(user_id, command, channel):
 
                 # check if user wants the name of the bot
                 if lookup_id == BOT_ID:
-                    response = f"<@{user_id}>: My name is Penis Bot!"
+                    bot_name = get_real_name(BOT_ID)
+                    response = f"<@{user_id}>: My name is {bot_name}!"
                     slack_client.api_call("chat.postMessage", channel=channel, text=response, as_user=True)
                     return
 
