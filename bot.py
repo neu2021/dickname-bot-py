@@ -125,7 +125,7 @@ def handle_command(user_id, command, channel):
                     return
 
                 initials = [split_name[0][0].lower(), split_name[1][0].lower()]
-                response = f"<@{user_id}: <@{lookup_id}>"
+                response = f"<@{user_id}>: <@{lookup_id}>"
                 if response[-1] == 's':
                     response += "'"
                 else:
@@ -149,6 +149,7 @@ def handle_command(user_id, command, channel):
 
             response += f" penis name is {firstname[initials[0]]} {lastname[initials[1]]}."
             slack_client.api_call("chat.postMessage", channel=channel, text=response, as_user=True)
+
     # show original image
     elif args[0] == "image":
         response = [
@@ -159,6 +160,16 @@ def handle_command(user_id, command, channel):
             }
         ]
         slack_client.api_call("chat.postMessage", channel=channel, attachments=response, as_user=True)
+
+    # help menu
+    elif args[0] == "help":
+        response = (f"```Usage: <@{BOT_ID}> COMMAND [ARGS]\n"
+                    "\n"
+                    "Commands:\n"
+                    "  name      Get your penis name, or enter a full name or an @(user) for someone else's.\n"
+                    "  image     Show the image Penis Bot is based off of.\n"
+                    "  help      Show this message.```")
+        slack_client.api_call("chat.postMessage", channel=channel, text=response, as_user=True)
 
 
 def parse_slack_output(slack_rtm_output):
