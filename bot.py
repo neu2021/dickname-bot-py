@@ -85,8 +85,8 @@ def handle_command(user_id, command, channel):
 
         # initial basic format check
         if len(args) not in (1, 2, 3):
-            slack_client.api_call("chat.postMessage", channel=channel,
-                                  text=f"<@{user_id}>: Incorrect number of arguments!", as_user=True)
+            response = f"<@{user_id}>: Incorrect number of arguments!"
+            slack_client.api_call("chat.postMessage", channel=channel, text=response, as_user=True)
         else:
             if len(args) == 3:
                 initials = [args[1][0].lower(), args[2][0].lower()]  # get initials from arguments
@@ -104,8 +104,7 @@ def handle_command(user_id, command, channel):
                 # check if user wants the name of the bot
                 if lookup_id == BOT_ID:
                     response = f"<@{user_id}>: My name is Penis Bot!"
-                    slack_client.api_call("chat.postMessage", channel=channel,
-                                          text=response, as_user=True)
+                    slack_client.api_call("chat.postMessage", channel=channel, text=response, as_user=True)
                     return
 
                 real_name = get_real_name(lookup_id)
@@ -114,15 +113,13 @@ def handle_command(user_id, command, channel):
                 # check if user has set real name
                 if not real_name:
                     response = f"<@{user_id}>: <@{lookup_id}> hasn't set their real name yet!"
-                    slack_client.api_call("chat.postMessage", channel=channel,
-                                          text=response, as_user=True)
+                    slack_client.api_call("chat.postMessage", channel=channel, text=response, as_user=True)
                     return
 
                 # check if name is valid
                 if not len(split_name) == 2:
                     response = f"<@{user_id}>: <@{lookup_id}> does not have a valid name!"
-                    slack_client.api_call("chat.postMessage", channel=channel,
-                                          text=response, as_user=True)
+                    slack_client.api_call("chat.postMessage", channel=channel, text=response, as_user=True)
                     return
 
                 initials = [split_name[0][0].lower(), split_name[1][0].lower()]
@@ -137,22 +134,29 @@ def handle_command(user_id, command, channel):
                 split_name = real_name.split()
                 if not real_name:
                     response = f"<@{user_id}>: You haven't set your real name yet!"
-                    slack_client.api_call("chat.postMessage", channel=channel,
-                                          text=response, as_user=True)
+                    slack_client.api_call("chat.postMessage", channel=channel, text=response, as_user=True)
                     return
 
                 elif not len(split_name) == 2:
                     response = f"<@{user_id}>: Your name is invalid!"
-                    slack_client.api_call("chat.postMessage", channel=channel,
-                                          text=response, as_user=True)
+                    slack_client.api_call("chat.postMessage", channel=channel, text=response, as_user=True)
                     return
 
                 initials = [split_name[0][0].lower(), split_name[1][0].lower()]
                 response = f"<@{user_id}>: Your"
 
             response += f" penis name is {firstname[initials[0]]} {lastname[initials[1]]}."
-            slack_client.api_call("chat.postMessage", channel=channel,
-                                  text=response, as_user=True)
+            slack_client.api_call("chat.postMessage", channel=channel, text=response, as_user=True)
+    # show original image
+    elif args[0] == "image":
+        response = [
+            {
+                "fallback": "Penis name source image",
+                "image_url": "http://i.imgur.com/MZEDlNI.png",
+                "text": "This bot is based off of this image:"
+            }
+        ]
+        slack_client.api_call("chat.postMessage", channel=channel, attachments=response, as_user=True)
 
 
 def parse_slack_output(slack_rtm_output):
