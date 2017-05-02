@@ -147,7 +147,7 @@ def handle_command(user_id, command, channel):
                 initials = [split_name[0][0].lower(), split_name[1][0].lower()]
                 response = f"<@{user_id}>: Your"
 
-            response += f" penis name is {firstname[initials[0]]} {lastname[initials[1]]}."
+            response += f" dickname is {firstname[initials[0]]} {lastname[initials[1]]}."
             slack_client.api_call("chat.postMessage", channel=channel, text=response, as_user=True)
 
     # show original image
@@ -166,7 +166,7 @@ def handle_command(user_id, command, channel):
         response = (f"```Usage: <@{BOT_ID}> COMMAND [ARGS]\n"
                     "\n"
                     "Commands:\n"
-                    "  name      Get your penis name, or enter a full name or an @(user) for someone else's.\n"
+                    "  name      Get your dickname, or enter a full name or an @(user) for someone else's.\n"
                     "  image     Show the image Penis Bot is based off of.\n"
                     "  help      Show this message.```")
         slack_client.api_call("chat.postMessage", channel=channel, text=response, as_user=True)
