@@ -1,13 +1,13 @@
 # Penis Name Bot
-A bot for Slack that will tell your your penis name.
+A bot for Slack that will tell your your dickname.
 
 ## Usage
-For your penis name:
+For your dickname:
 ```
 @penis-bot name
 ```
 
-For someone else's penis name:
+For someone else's dickname:
 ```
 @penis-bot name John Doe
 @penis-bot name @john.doe
@@ -17,4 +17,4 @@ For someone else's penis name:
 Make `token.txt` with the bot token in it and `id.txt` with the bot's user id in it. Put these files in the same directory as bot.py, and run the script.
 
 ## To Do
-* Implement syntax `@penis-bot name @some-user`
+* Fill to do list
